@@ -3,6 +3,7 @@ export async function getData() {
   const displayText = document.querySelector("p");
   const temperatureText = document.querySelector("#temperature");
   const toggleBtn = document.querySelector("#toggleBtn");
+  const temp = document.getElementById("temp");
 
   let currentTempCelsius = null;
   let currentTempFahrenheit = null;
@@ -12,9 +13,11 @@ export async function getData() {
     const location = search.value.trim();
 
     if (!location) {
-      displayText.textContent = "Please enter a location.";
-      return;
-    }
+        displayText.textContent = "Please enter a location.";
+        return;
+      } else {
+        displayText.textContent = ""; // Clear the message when a location is entered
+      }
     try {
       const weatherForecast = await fetch(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=KLVCV47X6979SENLNZCDUFAGA`,
@@ -27,22 +30,26 @@ export async function getData() {
       currentTempFahrenheit = weatherData.days[0].temp;
       currentTempCelsius = ((currentTempFahrenheit - 32) * 5) / 9;
 
+      document.getElementById("location").textContent =
+        weatherData.resolvedAddress;
+      document.getElementById("conditions").textContent =
+        weatherData.currentConditions.conditions;
+      document.getElementById("description").textContent =
+        weatherData.description;
+
       if (isFahrenheit) {
-        temperatureText.textContent = `The temperature in ${location} is ${currentTempFahrenheit.toFixed(
-          1
-        )}°F.`;
+        temp.textContent = `${currentTempFahrenheit.toFixed(1)}°F`;
         toggleBtn.textContent = "°C";
       } else {
-        temperatureText.textContent = `The temperature in ${location} is ${currentTempCelsius.toFixed(
-          1
-        )}°C.`;
+        temp.textContent = `${currentTempCelsius.toFixed(1)}°C`;
         toggleBtn.textContent = "°F";
       }
+
+      isFahrenheit = !isFahrenheit;
     } catch (error) {
       console.error(error);
       displayText.textContent =
         "Error fetching weather data. Please try again.";
     }
-    isFahrenheit = !isFahrenheit;
   });
 }

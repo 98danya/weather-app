@@ -7,8 +7,23 @@
     <title>Weather App</title>
 </head>
 <body>
-    <input type="text" placeholder="Search for a location…" id="searchfield" value="Frankfurt">
+    <input type="text" placeholder="Search for a location…" id="searchfield" value="Frankfurt" required>
     <button id="toggleBtn">°C</button>
     <p id="temperature"></p>
+
+
+    <div class="temp-container container">
+        <div class="temp-details">
+          <div class="temp-top">
+            <h1 id="temp"></h1>
+            <div class="temp-right">
+              <h2 id="location"></h2>
+              <p id="conditions"></p>
+            </div>
+          </div>
+          <p class="temp-description" id="description"></p>
+        </div>
+    </div>
+    
 </body>
 </html>
