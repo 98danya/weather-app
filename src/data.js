@@ -1,3 +1,5 @@
+import { weatherIcon } from "./icons";
+
 function getDayName(dateString) {
   const date = new Date(dateString);
   const days = [
@@ -32,7 +34,7 @@ export async function getData() {
       displayText.textContent = "Please enter a location.";
       return;
     } else {
-      displayText.textContent = ""; 
+      displayText.textContent = "";
     }
     try {
       const weatherForecast = await fetch(
@@ -43,6 +45,8 @@ export async function getData() {
         throw new Error("Weather data not found. Check the location.");
       }
       const weatherData = await weatherForecast.json();
+      const currentConditions = weatherData.currentConditions;
+
       currentTempFahrenheit = weatherData.days[0].temp;
       currentTempCelsius = ((currentTempFahrenheit - 32) * 5) / 9;
 
@@ -53,11 +57,20 @@ export async function getData() {
       document.getElementById("description").textContent =
         weatherData.description;
 
-      temp.textContent = `${
-        isFahrenheit
-          ? currentTempFahrenheit.toFixed(1) + "°F"
-          : currentTempCelsius.toFixed(1) + "°C"
-      }`;
+      const currentIcon =
+        weatherIcon[currentConditions.icon] || "./icons/default.png";
+
+      temp.innerHTML = `
+        <img src="${currentIcon}" alt="${
+        currentConditions.icon
+      }" class="weather-icon-main" />
+        <span>${
+          isFahrenheit
+            ? currentTempFahrenheit.toFixed(1) + "°F"
+            : currentTempCelsius.toFixed(1) + "°C"
+        }</span>
+      `;
+
       toggleBtn.textContent = isFahrenheit ? "°C" : "°F";
 
       const conditions = [
@@ -92,17 +105,21 @@ export async function getData() {
 
       weatherData.days.slice(0, 7).forEach((day) => {
         const dayName = getDayName(day.datetime);
+        const condition = day.icon;
+        const iconPath = weatherIcon[condition] || "./icons/default.png";
+
         const forecastItem = document.createElement("div");
         forecastItem.classList.add("forecast-item");
         forecastItem.innerHTML = `
-                    <h4>${dayName} (${day.datetime})</h4>
-                    <p>Temperature: ${
-                      isFahrenheit
-                        ? day.temp + "°F"
-                        : (((day.temp - 32) * 5) / 9).toFixed(1) + "°C"
-                    }</p>
-                    <p>Conditions: ${day.conditions}</p>
-                `;
+          <h4>${dayName} (${day.datetime})</h4>
+          <img src="${iconPath}" alt="${condition}" class="weather-icon" />
+          <p>Temperature: ${
+            isFahrenheit
+              ? day.temp + "°F"
+              : (((day.temp - 32) * 5) / 9).toFixed(1) + "°C"
+          }</p>
+          <p>Conditions: ${condition.replace(/-/g, " ")}</p>
+        `;
         forecastContainer.appendChild(forecastItem);
       });
 

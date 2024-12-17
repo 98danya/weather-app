@@ -1,0 +1,26 @@
+.forecast-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .forecast-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .weather-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .weather-icon-main {
+    width: 200px;
+    height: 200px;
+    margin-right: 10px;
+  }
