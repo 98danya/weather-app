@@ -1,9 +1,25 @@
+function getDayName(dateString) {
+  const date = new Date(dateString);
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return days[date.getDay()];
+}
+
 export async function getData() {
   const search = document.querySelector("#searchfield");
   const displayText = document.querySelector("p");
   const temperatureText = document.querySelector("#temperature");
   const toggleBtn = document.querySelector("#toggleBtn");
   const temp = document.getElementById("temp");
+  const conditionsContainer = document.getElementById("conditions");
+  const forecastContainer = document.getElementById("forecast");
 
   let currentTempCelsius = null;
   let currentTempFahrenheit = null;
@@ -13,11 +29,11 @@ export async function getData() {
     const location = search.value.trim();
 
     if (!location) {
-        displayText.textContent = "Please enter a location.";
-        return;
-      } else {
-        displayText.textContent = ""; // Clear the message when a location is entered
-      }
+      displayText.textContent = "Please enter a location.";
+      return;
+    } else {
+      displayText.textContent = ""; 
+    }
     try {
       const weatherForecast = await fetch(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=KLVCV47X6979SENLNZCDUFAGA`,
@@ -37,13 +53,58 @@ export async function getData() {
       document.getElementById("description").textContent =
         weatherData.description;
 
-      if (isFahrenheit) {
-        temp.textContent = `${currentTempFahrenheit.toFixed(1)}°F`;
-        toggleBtn.textContent = "°C";
-      } else {
-        temp.textContent = `${currentTempCelsius.toFixed(1)}°C`;
-        toggleBtn.textContent = "°F";
-      }
+      temp.textContent = `${
+        isFahrenheit
+          ? currentTempFahrenheit.toFixed(1) + "°F"
+          : currentTempCelsius.toFixed(1) + "°C"
+      }`;
+      toggleBtn.textContent = isFahrenheit ? "°C" : "°F";
+
+      const conditions = [
+        {
+          label: "Humidity",
+          value: `${weatherData.currentConditions.humidity}%`,
+        },
+        { label: "Dew Point", value: `${weatherData.currentConditions.dew}°` },
+        {
+          label: "Wind Speed",
+          value: `${weatherData.currentConditions.windspeed} km/h`,
+        },
+        {
+          label: "Cloud Cover",
+          value: `${weatherData.currentConditions.cloudcover}%`,
+        },
+      ];
+
+      conditionsContainer.innerHTML = "";
+
+      conditions.forEach((condition) => {
+        const conditionItem = document.createElement("div");
+        conditionItem.classList.add("conditions-item");
+        conditionItem.innerHTML = `
+            <p>${condition.label}</p>
+            <h4 class="conditions-item-value">${condition.value}</h4>
+        `;
+        conditionsContainer.appendChild(conditionItem);
+      });
+
+      forecastContainer.innerHTML = "";
+
+      weatherData.days.slice(0, 7).forEach((day) => {
+        const dayName = getDayName(day.datetime);
+        const forecastItem = document.createElement("div");
+        forecastItem.classList.add("forecast-item");
+        forecastItem.innerHTML = `
+                    <h4>${dayName} (${day.datetime})</h4>
+                    <p>Temperature: ${
+                      isFahrenheit
+                        ? day.temp + "°F"
+                        : (((day.temp - 32) * 5) / 9).toFixed(1) + "°C"
+                    }</p>
+                    <p>Conditions: ${day.conditions}</p>
+                `;
+        forecastContainer.appendChild(forecastItem);
+      });
 
       isFahrenheit = !isFahrenheit;
     } catch (error) {

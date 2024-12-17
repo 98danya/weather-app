@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
 </head>
+
 <body>
-    <input type="text" placeholder="Search for a location…" id="searchfield" value="Frankfurt" required>
-    <button id="toggleBtn">°C</button>
-    <p id="temperature"></p>
-
-
-    <div class="temp-container container">
+    <nav>
+        <div class="searchbar-nav">
+            <input type="text" placeholder="Search for a location…" id="searchfield" value="Frankfurt" required>
+            <button id="toggleBtn">°C</button>
+            <p id="temperature"></p>
+        </div>
+    </nav>
+    <div class="temp-main-container">
         <div class="temp-details">
-          <div class="temp-top">
-            <h1 id="temp"></h1>
-            <div class="temp-right">
-              <h2 id="location"></h2>
-              <p id="conditions"></p>
+            <div class="temp-top-container">
+                <h1 id="temp"></h1>
+                    <h2 id="location"></h2>
+                    <p id="conditions"></p>
             </div>
-          </div>
-          <p class="temp-description" id="description"></p>
+            <p class="temp-description" id="description"></p>
         </div>
     </div>
-    
+
+    <div class="temp-conditions-container">
+        <div id="conditions"></div>
+    </div>
+
+    <div class="temp-forecast-container">
+        <div id="forecast"></div>
+    </div>
+
+
 </body>
 </html>
