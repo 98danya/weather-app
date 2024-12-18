@@ -17,15 +17,25 @@ function getDayName(dateString) {
 export async function getData() {
   const search = document.querySelector("#searchfield");
   const displayText = document.querySelector("p");
-  const temperatureText = document.querySelector("#temperature");
+  //const temperatureText = document.querySelector("#temperature");
   const toggleBtn = document.querySelector("#toggleBtn");
   const temp = document.getElementById("temp");
-  const conditionsContainer = document.getElementById("conditions");
+  const tempMainContainer = document.querySelector(".temp-main-container");
+  const tempForecastContainer = document.querySelector(".temp-forecast-container");
+ //const conditionsContainer = document.getElementById("conditions");
   const forecastContainer = document.getElementById("forecast");
+  const nav = document.querySelector("nav");
 
   let currentTempCelsius = null;
   let currentTempFahrenheit = null;
   let isFahrenheit = true;
+
+
+  toggleBtn.addEventListener("click", () => {
+    nav.classList.add("moved-up");
+  });
+
+  
 
   toggleBtn.addEventListener("click", async () => {
     const location = search.value.trim();
@@ -45,6 +55,8 @@ export async function getData() {
         throw new Error("Weather data not found. Check the location.");
       }
       const weatherData = await weatherForecast.json();
+      tempMainContainer.style.display = "grid";
+      tempForecastContainer.style.display = "grid";
       const currentConditions = weatherData.currentConditions;
 
       currentTempFahrenheit = weatherData.days[0].temp;
@@ -60,10 +72,10 @@ export async function getData() {
       const currentIcon =
         weatherIcon[currentConditions.icon] || "./icons/default.png";
 
+      document.getElementById("weather-icon-main").innerHTML = 
+      `<img src="${currentIcon}" alt="${currentConditions.icon}" class="weather-icon-main"/>`;
+
       temp.innerHTML = `
-        <img src="${currentIcon}" alt="${
-        currentConditions.icon
-      }" class="weather-icon-main" />
         <span>${
           isFahrenheit
             ? currentTempFahrenheit.toFixed(1) + "°F"
@@ -73,7 +85,7 @@ export async function getData() {
 
       toggleBtn.textContent = isFahrenheit ? "°C" : "°F";
 
-      const conditions = [
+      /* const conditions = [
         {
           label: "Humidity",
           value: `${weatherData.currentConditions.humidity}%`,
@@ -99,11 +111,11 @@ export async function getData() {
             <h4 class="conditions-item-value">${condition.value}</h4>
         `;
         conditionsContainer.appendChild(conditionItem);
-      });
+      }); */
 
       forecastContainer.innerHTML = "";
 
-      weatherData.days.slice(0, 7).forEach((day) => {
+      weatherData.days.slice(0, 10).forEach((day) => {
         const dayName = getDayName(day.datetime);
         const condition = day.icon;
         const iconPath = weatherIcon[condition] || "./icons/default.png";
@@ -111,8 +123,8 @@ export async function getData() {
         const forecastItem = document.createElement("div");
         forecastItem.classList.add("forecast-item");
         forecastItem.innerHTML = `
-          <h4>${dayName} (${day.datetime})</h4>
           <img src="${iconPath}" alt="${condition}" class="weather-icon" />
+          <h4>${dayName} (${day.datetime})</h4>
           <p>Temperature: ${
             isFahrenheit
               ? day.temp + "°F"

@@ -10,30 +10,35 @@
 
 <body>
     <nav>
-        <div class="searchbar-nav">
+        <div class="searchbar-container">
             <input type="text" placeholder="Search for a location…" id="searchfield" value="Frankfurt" required>
             <button id="toggleBtn">°C</button>
             <p id="temperature"></p>
         </div>
     </nav>
-    <div class="temp-main-container">
-        <div class="temp-details">
+    <div class="temp-container">
+        <div class="temp-main-container">
             <div class="temp-top-container">
+                <div id="weather-icon-main"></div>
                 <h1 id="temp"></h1>
                 <h2 id="location"></h2>
-                <p id="conditions"></p>
             </div>
-            <p class="temp-description" id="description"></p>
+            <div class="temp-bottom-container">
+                <p id="conditions"></p>
+                <p class="temp-description" id="description"></p>
+            </div>
         </div>
-    </div>
 
-    <div class="temp-conditions-container">
+        <!--     <div class="temp-conditions-container">
         <div id="conditions"></div>
+    </div> -->
+
+        <div class="temp-forecast-container">
+            <div id="forecast"></div>
+        </div>
+
     </div>
 
-    <div class="temp-forecast-container">
-        <div id="forecast"></div>
-    </div>
 
 
 </body>
