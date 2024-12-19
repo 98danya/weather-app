@@ -17,12 +17,12 @@ function getDayName(dateString) {
 export async function getData() {
   const search = document.querySelector("#searchfield");
   const displayText = document.querySelector("p");
-  //const temperatureText = document.querySelector("#temperature");
   const toggleBtn = document.querySelector("#toggleBtn");
   const temp = document.getElementById("temp");
   const tempMainContainer = document.querySelector(".temp-main-container");
-  const tempForecastContainer = document.querySelector(".temp-forecast-container");
- //const conditionsContainer = document.getElementById("conditions");
+  const tempForecastContainer = document.querySelector(
+    ".temp-forecast-container"
+  );
   const forecastContainer = document.getElementById("forecast");
   const nav = document.querySelector("nav");
 
@@ -30,12 +30,9 @@ export async function getData() {
   let currentTempFahrenheit = null;
   let isFahrenheit = true;
 
-
   toggleBtn.addEventListener("click", () => {
     nav.classList.add("moved-up");
   });
-
-  
 
   toggleBtn.addEventListener("click", async () => {
     const location = search.value.trim();
@@ -72,8 +69,9 @@ export async function getData() {
       const currentIcon =
         weatherIcon[currentConditions.icon] || "./icons/default.png";
 
-      document.getElementById("weather-icon-main").innerHTML = 
-      `<img src="${currentIcon}" alt="${currentConditions.icon}" class="weather-icon-main"/>`;
+      document.getElementById(
+        "weather-icon-main"
+      ).innerHTML = `<img src="${currentIcon}" alt="${currentConditions.icon}" class="weather-icon-main"/>`;
 
       temp.innerHTML = `
         <span>${
@@ -85,37 +83,9 @@ export async function getData() {
 
       toggleBtn.textContent = isFahrenheit ? "°C" : "°F";
 
-      /* const conditions = [
-        {
-          label: "Humidity",
-          value: `${weatherData.currentConditions.humidity}%`,
-        },
-        { label: "Dew Point", value: `${weatherData.currentConditions.dew}°` },
-        {
-          label: "Wind Speed",
-          value: `${weatherData.currentConditions.windspeed} km/h`,
-        },
-        {
-          label: "Cloud Cover",
-          value: `${weatherData.currentConditions.cloudcover}%`,
-        },
-      ];
-
-      conditionsContainer.innerHTML = "";
-
-      conditions.forEach((condition) => {
-        const conditionItem = document.createElement("div");
-        conditionItem.classList.add("conditions-item");
-        conditionItem.innerHTML = `
-            <p>${condition.label}</p>
-            <h4 class="conditions-item-value">${condition.value}</h4>
-        `;
-        conditionsContainer.appendChild(conditionItem);
-      }); */
-
       forecastContainer.innerHTML = "";
 
-      weatherData.days.slice(0, 10).forEach((day) => {
+      weatherData.days.slice(0, 9).forEach((day) => {
         const dayName = getDayName(day.datetime);
         const condition = day.icon;
         const iconPath = weatherIcon[condition] || "./icons/default.png";
@@ -124,13 +94,18 @@ export async function getData() {
         forecastItem.classList.add("forecast-item");
         forecastItem.innerHTML = `
           <img src="${iconPath}" alt="${condition}" class="weather-icon" />
-          <h4>${dayName} (${day.datetime})</h4>
-          <p>Temperature: ${
+
+          <p class="forecast-temp"> ${
             isFahrenheit
               ? day.temp + "°F"
               : (((day.temp - 32) * 5) / 9).toFixed(1) + "°C"
           }</p>
-          <p>Conditions: ${condition.replace(/-/g, " ")}</p>
+          <h4>${dayName}</h4>
+          <h5>(${day.datetime})</h5>
+          <p class="forecast-conditions">Conditions: ${condition.replace(
+            /-/g,
+            " "
+          )}</p>
         `;
         forecastContainer.appendChild(forecastItem);
       });
